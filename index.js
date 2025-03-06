@@ -35,7 +35,9 @@ async function run() {
     const Database = await client.db("MernLernerDB");
 
     const Users = Database.collection("users")
+    const Products = Database.collection("products")
 
+  //----------AUTH---------------//
     app.post('/signup', async(req, res) => {
       const userData = req.body
       
@@ -82,6 +84,27 @@ async function run() {
 
     })
 
+    app.post('/addproduct', async(req, res) => {
+     
+      const prodData = req.body
+      const imgdata = req.files.img.data
+      const encoded = imgdata.toString('base64')
+      const img = Buffer.from(encoded, 'base64')
+
+      const newObj = {
+        ...prodData,
+        img: img
+      }
+      const result = await Products.insertOne(newObj);
+     
+      res.json({msg: 'Product Added Successfully'})
+    })
+
+    app.get('/allproduct', async(req, res) => {
+      const result = await Products.find({}).toArray()
+
+      res.json(result)
+    })
   } finally {
     
   }
