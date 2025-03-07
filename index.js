@@ -102,9 +102,66 @@ async function run() {
 
     app.get('/allproduct', async(req, res) => {
       const result = await Products.find({}).toArray()
-
+      console.log('result', result.length)
       res.json(result)
     })
+
+    app.delete('/deleteprod/:id', async(req, res) => {
+      const {id} = req.params
+
+      const query = {_id: new ObjectID(id)}
+
+      const dltResult = await Products.deleteOne(query)
+      res.json({msg: 'Product Deleted Successfully'})
+
+    })
+
+    app.get('/singleprod/:id', async(req, res) => {
+      const {id} = req.params
+
+      const query = {_id: new ObjectID(id)}
+
+      const result = await Products.findOne(query)
+      res.json(result)
+    })
+
+    app.put('/updateProd/:id', async(req, res) => {
+      const productData = req.body
+      const {id} = req.params
+      const imgdata = req?.files?.img?.data
+
+      const query = {_id: new ObjectID(id)}
+
+      let updateDoc = {
+        $set:{
+          ...productData
+        }
+      }
+
+      if(imgdata){
+        const encoded = imgdata.toString('base64')
+        const img = Buffer.from(encoded, 'base64')
+
+        updateDoc = {
+          $set:{
+            ...productData,
+            img: img
+          }
+        }
+
+      }
+      else{
+        updateDoc = {
+          $set:{
+            ...productData
+          }
+        }
+      }
+      const updatedResult = await Products.updateOne(query, updateDoc)
+
+      res.send({msg: 'Product updated'})
+    })
+
   } finally {
     
   }
