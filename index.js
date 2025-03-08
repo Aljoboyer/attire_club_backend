@@ -36,6 +36,7 @@ async function run() {
 
     const Users = Database.collection("users")
     const Products = Database.collection("products")
+    const Orders = Database.collection("orders")
 
   //----------AUTH---------------//
     app.post('/signup', async(req, res) => {
@@ -160,6 +161,22 @@ async function run() {
       const updatedResult = await Products.updateOne(query, updateDoc)
 
       res.send({msg: 'Product updated'})
+    })
+
+
+    app.post('/ordersubmit', async(req, res) => {
+     
+      const orderData = req.body
+
+      const result = await Orders.insertMany(orderData);
+     
+      res.json({msg: 'Product Ordered Successfully'})
+    })
+
+    app.get('/allOrders', async(req, res) => {
+      const result = await Orders.find({}).toArray()
+      console.log('result', result.length)
+      res.json(result)
     })
 
   } finally {
