@@ -207,4 +207,9 @@ app.listen(port, () => {
 })
 
 
+app.get('/', (req, res) => {
+  res.send("Attireclub Backend ")
+})
+
+
 module.exports = app;
