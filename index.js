@@ -163,7 +163,6 @@ async function run() {
       res.send({msg: 'Product updated'})
     })
 
-
     app.post('/ordersubmit', async(req, res) => {
      
       const orderData = req.body
@@ -179,6 +178,23 @@ async function run() {
       res.json(result)
     })
 
+    app.put('/statuschange/:id', async(req, res) => {
+      const {status} = req.body
+      const {id} = req.params
+
+      const query = {_id: new ObjectID(id)}
+
+      let updateDoc = {
+        $set:{
+          status: status
+        }
+      }
+
+      const updatedResult = await Orders.updateOne(query, updateDoc)
+
+      res.send({msg: 'Order updated'})
+    })
+
   } finally {
     
   }
@@ -189,3 +205,6 @@ run().catch(console.dir);
 app.listen(port, () => {
     console.log('Attire Club Server running on port 5000')
 })
+
+
+module.exports = app;
